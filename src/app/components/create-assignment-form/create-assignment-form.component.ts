@@ -44,8 +44,7 @@ export class CreateAssignmentFormComponent {
         isFinished: false,
         description: this.assignmentForm.value.description || 'no description',
         endDate: this.assignmentForm.value.endDate || new Date('1690,01,01'),
-        //assignmentType: this.assignmentForm.value.assignmentType
-        assignmentType: { id: 1, name: "PERSONAL"}
+        assignmentType: this.assignmentForm.value.assignmentsTypes
       };
       this.assignmentsService.addAssignment(newAssignment).subscribe(
         //add in the client and sort

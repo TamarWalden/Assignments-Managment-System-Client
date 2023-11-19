@@ -1,0 +1,93 @@
+
+<div class="card">
+    <p-toast></p-toast>
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+            <!-- <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteAssignment()" [disabled]="!selectedAssignments || !selectedAssignments.length"></button> -->
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+            <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table
+        #dt
+        [value]="assignments"
+        [rows]="5"
+        [paginator]="true"
+        [globalFilterFields]="['name', 'description']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [(selection)]="selectedAssignments"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Manage Assignments</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="id" style="min-width:2rem">Id <p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="name" style="min-width:10rem">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                <th pSortableColumn="startDate" style="min-width:10rem">Start Date <p-sortIcon field="startDate"></p-sortIcon></th>
+                <th pSortableColumn="endDate" style="min-width:10rem">End Date <p-sortIcon field="endDate"></p-sortIcon></th>
+                <th pSortableColumn="isRecurring" style="min-width:10rem">Repeated or one-time<p-sortIcon field="isRecurring"></p-sortIcon></th>
+                <th pSortableColumn="isFinished" style="min-width:10rem">isFinished<p-sortIcon field="isFinished"></p-sortIcon></th>
+                <th pSortableColumn="inventoryStatus" style="min-width:10rem">Type <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-assignment>
+            <tr>
+                <td>    
+                    <p-tableCheckbox 
+                    [value]="assignment" 
+                    #assignmentCheckbox
+                    [disabled]="assignment.isFinished" 
+                    >
+                </p-tableCheckbox>
+                </td>
+                <td>{{ assignment.id }}</td>
+                <td>{{ assignment.name }}</td>
+                <td>{{ assignment.description ? assignment.description : 'There is no descripation' }}</td>
+                <td>{{ assignment.startDate }}</td>
+                <!-- change to date format -->
+                <!-- <td>{{ assignment.endDate ? assignment.endDate | Date: 'There is no deadline' }}</td> -->
+                <td>{{ assignment.endDate}}</td>
+                <td>{{ assignment.isRecurring }}</td>
+                <td>{{ assignment.isFinished }}</td>
+                <td>
+                    <p-tag [value]="assignment.assignmentType.name" [severity]="getSeverity(assignment.assignmentType.name)"></p-tag>
+                </td>
+                <td>
+                    <button 
+                    pButton pRipple icon="pi pi-save" 
+                    class="p-button-rounded p-button-success mr-2"        
+                    [disabled]="!assignmentCheckbox.checked"     
+                    (click)="editAssignment(assignment,assignmentCheckbox.checked)">
+                </button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteAssignment(assignment)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">In total there are {{ assignments ? assignments.length : 0 }} assignments.</div>
+        </ng-template>
+    </p-table>
+</div>
+
+<app-create-assignment-form [assignmentDialog]="assignmentDialog" [assignmentsTypes]="assignmentsTypes" (addAssignment)="updateAssignments()"></app-create-assignment-form>

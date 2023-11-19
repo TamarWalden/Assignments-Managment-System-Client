@@ -1,0 +1,48 @@
+<p-dialog [(visible)]="assignmentDialog" [style]="{ width: '450px' }" header="create new assignment" [modal]="true"
+    styleClass="p-fluid" *ngIf="assignmentDialog">
+
+    <form [formGroup]="assignmentForm" (ngSubmit)="saveAssignment()">
+        <div class="field col">
+            <label for="assignmentsTypes">The type of assignment</label>
+            <p-dropdown formControlName="assignmentsTypes" [options]="assignmentsTypes" optionLabel="name" autofocus ></p-dropdown>
+            <small class="p-error" *ngIf="assignmentForm.get('assignmentsTypes').invalid && assignmentForm.get('assignmentsTypes').touched">
+                AssignmentType is required.
+              </small>
+          </div>
+
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" pInputText id="name" formControlName="name" required  />
+          <small class="p-error" *ngIf="assignmentForm.get('name').invalid && assignmentForm.get('name').touched">
+            Name is required.
+          </small>
+        </div>
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" pInputTextarea formControlName="description" rows="3" cols="20"></textarea>
+        </div>
+   
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="startDate">Start Date</label>
+            <p-calendar id="startDate" formControlName="startDate" [showIcon]="true" [readonlyInput]="true"></p-calendar>
+            <small class="p-error"
+              *ngIf="assignmentForm.get('startDate').invalid && assignmentForm.get('startDate').touched">
+              Start Date is required.
+            </small>
+          </div>
+          <div class="field col">
+            <label for="endDate">End Date</label>
+            <p-calendar id="endDate" formControlName="endDate" [showIcon]="true" [readonlyInput]="true"></p-calendar>
+          </div>
+        </div>
+
+        <div class="field col">
+            <p-checkbox id="isRecurring" formControlName="isRecurring"></p-checkbox>
+            <label for="isRecurring">isRecurring </label>
+        </div>
+
+        <button pButton type="submit" label="Save" [disabled]="assignmentForm.invalid"></button>
+      </form>
+      
+</p-dialog>
